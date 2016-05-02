@@ -23,8 +23,10 @@ public:
     double  getNextTime  () {return nextTime;}
 
 public slots:
-    void onHideClicked();
-    void onCloseClicked();
+    void onHidePressed();
+    void onClosePressed();
+    void onNextPressed();
+    void onPrevPressed();
 
 private:
     void setupUi();
@@ -38,7 +40,10 @@ private:
     // UI elements
     QPushButton *closeButton;
     QPushButton *hideButton;
+    QPushButton *nextButton;
+    QPushButton *prevButton;
     QLabel      *filenameLabel;
+    QLabel      *timeLabel;
     QCustomPlot *chartPlot;
     QHBoxLayout *buttonLayout;
 

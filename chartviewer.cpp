@@ -9,12 +9,17 @@ void ChartViewer::setupUi()
 {
     //setup buttons
     hideButton = new QPushButton("Hide");
-    connect(hideButton, SIGNAL(pressed()), this, SLOT(onHideClicked()));
+    connect(hideButton, SIGNAL(pressed()), this, SLOT(onHidePressed()));
     closeButton = new QPushButton("Close");
-    connect(closeButton, SIGNAL(pressed()), this, SLOT(onCloseClicked()));
+    connect(closeButton, SIGNAL(pressed()), this, SLOT(onClosePressed()));
+    nextButton = new QPushButton(">");
+    connect(nextButton, SIGNAL(pressed()), this, SLOT(onNextPressed()));
+    prevButton = new QPushButton("<");
+    connect(prevButton, SIGNAL(pressed()), this, SLOT(onPrevPressed()));
 
-    //setup label
+    //setup labels
     filenameLabel = new QLabel("");
+    timeLabel = new QLabel("");
 
     //setup plot
     chartPlot = new QCustomPlot();
@@ -31,9 +36,13 @@ void ChartViewer::setupUi()
 
     // setup buttonLayout
     buttonLayout = new QHBoxLayout;
+    buttonLayout->addWidget(prevButton);
+    buttonLayout->addWidget(timeLabel);
+    buttonLayout->addWidget(nextButton);
     buttonLayout->addWidget(hideButton);
     buttonLayout->addWidget(filenameLabel);
     buttonLayout->addWidget(closeButton);
+
 
     // add items to this chartViewer
     this->addLayout(buttonLayout);
@@ -50,6 +59,7 @@ void ChartViewer::redraw(qint64 speed)
         updatePlot(speed > 0 ? true : false);
         // update times and restart timer
         lastTime = nextTime;
+        timeLabel->setText("Time: " + QString::number(lastTime, 'f', 0));
         //note: updatePlot change nextRecord!
         nextTime = timeData[nextRecord];
         timer.restart();
@@ -161,6 +171,7 @@ void ChartViewer::readFile()
     // save initial time values and start timer
     nextTime = timeData.first();
     lastTime = timeData.first();
+    timeLabel->setText("Time: " + QString::number(lastTime, 'f', 0));
     timer.start();
 }
 
@@ -207,16 +218,45 @@ qint64 ChartViewer::msecFromQTime(QTime time)
     return runtime;
 }
 
-void ChartViewer::onHideClicked()
+void ChartViewer::onHidePressed()
 {
     chartPlot->setVisible(chartPlot->isVisible() ? false : true);
 }
 
-void ChartViewer::onCloseClicked()
+void ChartViewer::onClosePressed()
 {
-    QString fname = "ChartViewer::onCloseClicked() => ";
+    QString fname = "ChartViewer::onClosePressed() => ";
     qDebug() << fname + "started";
     // send signal to MainWindow that this chartViewer is removed
     // there should be destructor call, which hasn't write yet
+    qDebug() << fname + "end";
+}
+
+void ChartViewer::onNextPressed()
+{
+    QString fname = "ChartViewer::onNextPressed() => ";
+    qDebug() << fname + "started";
+    // copypaste from redraw - separate func?
+    updatePlot(true);
+    // update times and restart timer
+    lastTime = nextTime;
+    timeLabel->setText("Time: " + QString::number(lastTime, 'f', 0));
+    //note: updatePlot change nextRecord!
+    nextTime = timeData[nextRecord];
+
+    qDebug() << fname + "end";
+}
+
+void ChartViewer::onPrevPressed()
+{
+    QString fname = "ChartViewer::onPrevPressed() => ";
+    qDebug() << fname + "started";
+    // copypaste from redraw - separate func?
+    updatePlot(false);
+    // update times and restart timer
+    lastTime = nextTime;
+    timeLabel->setText("Time: " + QString::number(lastTime, 'f', 0));
+    //note: updatePlot change nextRecord!
+    nextTime = timeData[nextRecord];
     qDebug() << fname + "end";
 }
