@@ -46,8 +46,7 @@ private:
     const double rangeXSize = 1000.0;
     const double rangeYSize = 20.0;
     const int plotHeight = 200;
-    QList <QPen> lineColors;          //colors of line which will be added by playing
-    QList <QPen> preloadedLineColors; //colors of line which will be preloaded
+    QList <QPen> lineColors;
 
     // file vars
     QString filename;

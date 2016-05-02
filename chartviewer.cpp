@@ -62,45 +62,15 @@ void ChartViewer::updatePlot(bool isForward)
     for (quint64 i = 0 ; i < lineNumber; ++i)
     {
         chartPlot->graph(i)->rescaleKeyAxis();
-        chartPlot->graph(i)->setPen(lineColors[i]);
-        double toChart = chartData[i][nextRecord];
-
-        if (isForward)
-            chartPlot->graph(i)->addData(timeData[nextRecord], toChart);
-        else
-            chartPlot->graph(i)->removeData(timeData[nextRecord]);
-
-        double lastKey = 0;
-        //if chart data is not empty
-        if (chartPlot->graph(i)->data()->size())
-            lastKey = chartPlot->graph(i)->data()->lastKey();
-        chartPlot->xAxis->setRange(lastKey, rangeXSize, Qt::AlignCenter);
+        chartPlot->xAxis->setRange(timeData[nextRecord], rangeXSize, Qt::AlignCenter);
     }
     chartPlot->replot();
 
     // get next record id
     nextRecord = isForward ? nextRecord + 1 : nextRecord - 1 ;
 
-    // check if last record
-    if (nextRecord >= recordCounter)
-    {
-        nextRecord = 0;
-        // remove data from chart
-        for (quint64 i = 0; i < lineNumber; i++)
-        {
-            chartPlot->graph(i)->removeDataAfter(timeData[nextRecord]);
-        }
-    }
-    // check if first record
-    else if (nextRecord < 0)
-    {
-        nextRecord = recordCounter - 1;
-        // add data to chart
-        for (quint64 i = 0; i < lineNumber; i++)
-        {
-            chartPlot->graph(i)->addData(timeData, chartData[i]);
-        }
-    }
+    // check if first/last record
+    nextRecord = nextRecord >= recordCounter ? 0 : nextRecord < 0 ? recordCounter - 1 : nextRecord;
 }
 
 void ChartViewer::openFile(QString filename)
@@ -152,7 +122,6 @@ void ChartViewer::readFile()
         //set colors
         QColor color = getColor(i);
         lineColors.append(QPen(QBrush(color), 3));
-        preloadedLineColors.append(QPen(color));
 
         // create data lists
         if ( str != "time" ) // note: alredy created lists for time (timeDataInteger)
@@ -201,10 +170,20 @@ void ChartViewer::startPreparationToDraw()
     for (quint64 i = 0; i < lineNumber; i++)
     {
         chartPlot->addGraph(chartPlot->xAxis, chartPlot->yAxis);
-        chartPlot->graph(i + lineNumber + 1)->rescaleKeyAxis();
-        chartPlot->graph(i + lineNumber + 1)->setPen(preloadedLineColors[i]);
-        chartPlot->graph(i + lineNumber + 1)->addData(timeData, chartData[i]);
+        chartPlot->graph(i)->rescaleKeyAxis();
+        chartPlot->graph(i)->setPen(lineColors[i]);
+        chartPlot->graph(i)->addData(timeData, chartData[i]);
     }
+
+    // vertical line which mean current
+    QCPItemLine *verticalLine = new QCPItemLine(chartPlot);
+    chartPlot->addItem(verticalLine);
+    verticalLine->start->setType( QCPItemPosition::PositionType::ptAxisRectRatio );
+    verticalLine->start->setCoords(0.5, 0);
+    verticalLine->end->setType( QCPItemPosition::PositionType::ptAxisRectRatio );
+    verticalLine->end->setCoords(0.5, 1);
+    verticalLine->setPen(QPen(QBrush(Qt::red), 3));
+
     chartPlot->xAxis->setRange(timeData.first(), rangeXSize, Qt::AlignCenter);
     chartPlot->replot();
 }
