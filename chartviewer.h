@@ -19,8 +19,8 @@ public:
     void openFile(QString filename);
 
     QString getFileName  () {return filename;}
-    QTime   getLastTime  () {return lastTime;}
-    QTime   getNextTime  () {return nextTime;}
+    double  getLastTime  () {return lastTime;}
+    double  getNextTime  () {return nextTime;}
 
 public slots:
     void onHideClicked();
@@ -30,7 +30,9 @@ private:
     void setupUi();
     void openFileFailed();
     void readFile();
-    void readFirstLine();
+    void startPreparationToDraw();
+    void updatePlot(bool isForward = true);
+    QColor getColor(int idColor);
     qint64 msecFromQTime(QTime time);
 
     // UI elements
@@ -40,24 +42,31 @@ private:
     QCustomPlot *chartPlot;
     QHBoxLayout *buttonLayout;
 
+    // chart vars
+    const double rangeXSize = 1000.0;
+    const double rangeYSize = 20.0;
+    const int plotHeight = 200;
+    QList <QPen> lineColors;          //colors of line which will be added by playing
+    QList <QPen> preloadedLineColors; //colors of line which will be preloaded
+
     // file vars
     QString filename;
     QFile   *file;
 
+    // info vars
+    QStringList   labels;
+    quint64       lineNumber; // = labels.size() - 1, w/o time line
+
     // time vars
     QElapsedTimer timer;
-    QTime lastTime;
-    QTime nextTime;
+    double lastTime;
+    double nextTime;
 
     // data vars
-    qint64 currentRecord;
+    qint64 nextRecord;
     qint64 recordCounter;
-    const qint64 rangeSize = 1000;
-    QStringList   labels;
-    QList <QTime> times;
-    QList <QList <double>> chartData;
-    QList <QPen> lineColors;    //colors of line which will be added by playing
-    QList <QPen> oldLineColors; //colors of line which will be preloaded
+    QVector <double> timeData;
+    QList <QVector <double>> chartData;
 };
 
 #endif // CHARTVIEWER_H

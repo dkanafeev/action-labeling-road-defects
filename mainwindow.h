@@ -30,7 +30,7 @@ private slots:
 
 private:
     qint64 speed;
-    const qint64 timerDelay = 5;
+    const qint64 timerDelay = 2;
     Ui::MainWindow *ui;
     QTimer  *dataTimer;
     QList <ChartViewer*> chartList;

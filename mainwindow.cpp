@@ -73,13 +73,13 @@ void MainWindow::onStopClicked()
 
 void MainWindow::onTimerSignal()
 {
-    QString fname = "MainWindow::onTimerSignal";
-    qDebug () << fname + " started" ;
+    //QString fname = "MainWindow::onTimerSignal";
+    //qDebug () << fname + " started" ;
     foreach (ChartViewer *chart, chartList)
     {
         chart->redraw(speed);
     }
-    qDebug () << fname + " ended" ;
+    //qDebug () << fname + " ended" ;
 }
 
 MainWindow::~MainWindow()
