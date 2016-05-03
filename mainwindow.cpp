@@ -25,6 +25,7 @@ void MainWindow::onOpenClicked()
     ChartViewer* test = new ChartViewer();
     chartList.append(test);
     test->openFile(fileName);
+    connect (this, SIGNAL(redrawSignal(double)), test, SLOT(onRedrawSignal(double)));
     ui->chartsLayout->addLayout(test);
     qDebug () << fname + " ended" ;
 }
@@ -45,7 +46,7 @@ void MainWindow::onSpeedUpClicked()
 {
     QString fname = "MainWindow::onSpeedUpClicked";
     qDebug () << fname + " started" ;
-    speed = speed >= 1 ? speed * 2 : speed < -1 ? speed / 2 : 1;
+    speed = speed >= minSpeed ? speed * 2 : speed < -minSpeed ? speed / 2 : minSpeed;
     ui->speedLabel->setText("Speed: " + QString::number(speed));
     qDebug () << fname + " ended" ;
 }
@@ -54,7 +55,7 @@ void MainWindow::onSpeedDownClicked()
 {
     QString fname = "MainWindow::onSpeedDownClicked";
     qDebug () << fname + " started" ;
-    speed = speed <= -1 ? speed * 2 : speed > 1 ? speed / 2 : -1;
+    speed = speed <= -minSpeed ? speed * 2 : speed > minSpeed ? speed / 2 : -minSpeed;
     ui->speedLabel->setText("Speed: " + QString::number(speed));
     qDebug () << fname + " ended" ;
 }
@@ -73,13 +74,7 @@ void MainWindow::onStopClicked()
 
 void MainWindow::onTimerSignal()
 {
-    //QString fname = "MainWindow::onTimerSignal";
-    //qDebug () << fname + " started" ;
-    foreach (ChartViewer *chart, chartList)
-    {
-        chart->redraw(speed);
-    }
-    //qDebug () << fname + " ended" ;
+    emit redrawSignal(speed);
 }
 
 MainWindow::~MainWindow()

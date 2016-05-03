@@ -49,7 +49,7 @@ void ChartViewer::setupUi()
     this->addWidget(chartPlot);
 }
 
-void ChartViewer::redraw(qint64 speed)
+void ChartViewer::onRedrawSignal(double speed)
 {
     qint64 _tmpTimeElapsed = speed * timer.elapsed();
     // check timers

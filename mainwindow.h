@@ -20,6 +20,9 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+signals:
+    void redrawSignal(double speed);
+
 private slots:
     void onPlayClicked();
     void onStopClicked();
@@ -29,7 +32,8 @@ private slots:
     void onTimerSignal();
 
 private:
-    qint64 speed;
+    double speed;
+    const double minSpeed = 0.5;
     const qint64 timerDelay = 2;
     Ui::MainWindow *ui;
     QTimer  *dataTimer;

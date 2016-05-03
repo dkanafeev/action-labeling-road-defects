@@ -14,8 +14,6 @@ class ChartViewer : public QVBoxLayout
     QDOC_PROPERTY(QString fileName READ filename WRITE openFile)
 public:
     explicit ChartViewer(QWidget *parent = 0);
-
-    void redraw(qint64 speed);
     void openFile(QString filename);
 
     QString getFileName  () {return filename;}
@@ -27,6 +25,7 @@ public slots:
     void onClosePressed();
     void onNextPressed();
     void onPrevPressed();
+    void onRedrawSignal(double speed);
 
 private:
     void setupUi();
