@@ -6,7 +6,8 @@
 #include <QString>
 #include <QTimer>
 #include "chartviewer.h"
-#include "qcustomplot.h"
+#include "mapviewer.h"
+#include "videoviewer.h"
 
 namespace Ui {
 class MainWindow;
@@ -37,6 +38,8 @@ private:
     const qint64 timerDelay = 2;
     Ui::MainWindow *ui;
     QTimer  *dataTimer;
+    MapViewer* mapViewer;
+    VideoViewer* videoViewer;
     QList <ChartViewer*> chartList;
 };
 

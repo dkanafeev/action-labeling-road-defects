@@ -8,17 +8,29 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 QT += printsupport
+QT += webenginewidgets
 TARGET = action-labeling-road-defects
 TEMPLATE = app
-
 
 SOURCES += main.cpp\
         mainwindow.cpp \
     qcustomplot.cpp \
-    chartviewer.cpp
+    chartviewer.cpp \
+    mapviewer.cpp \
+    dataviewer.cpp \
+    videoviewer.cpp
 
 HEADERS  += mainwindow.h \
     qcustomplot.h \
-    chartviewer.h
+    chartviewer.h \
+    mapviewer.h \
+    dataviewer.h \
+    videoviewer.h
 
 FORMS    += mainwindow.ui
+
+DISTFILES += \
+    google_maps.html
+
+RESOURCES += \
+    resource.qrc

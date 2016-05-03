@@ -15,6 +15,14 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->stopButton,      SIGNAL(pressed()), this, SLOT(onStopClicked()));
     connect(ui->speedUpButton,   SIGNAL(pressed()), this, SLOT(onSpeedUpClicked()));
     connect(ui->speedDownButton, SIGNAL(pressed()), this, SLOT(onSpeedDownClicked()));
+
+    mapViewer = new MapViewer();
+    connect (this, SIGNAL(redrawSignal(double)), mapViewer, SLOT(onRedrawSignal(double)));
+    ui->mapLayout->addLayout(mapViewer);
+
+    videoViewer = new VideoViewer();
+    connect (this, SIGNAL(redrawSignal(double)), videoViewer, SLOT(onRedrawSignal(double)));
+    ui->videoLayout->addLayout(videoViewer);
 }
 
 void MainWindow::onOpenClicked()
@@ -26,7 +34,7 @@ void MainWindow::onOpenClicked()
     chartList.append(test);
     test->openFile(fileName);
     connect (this, SIGNAL(redrawSignal(double)), test, SLOT(onRedrawSignal(double)));
-    ui->chartsLayout->addLayout(test);
+    ui->chartsLayout->insertLayout(chartList.size() - 1, test);
     qDebug () << fname + " ended" ;
 }
 
