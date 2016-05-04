@@ -16,7 +16,7 @@ public slots:
 
 private:
     void startPreparationToDraw();
-    void updateViewer();
+    void updateViewer(bool isForward);
     QWebEngineView* map;
 
 };

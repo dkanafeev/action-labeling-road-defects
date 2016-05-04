@@ -16,7 +16,13 @@ public slots:
 
 private:
     void startPreparationToDraw();
-    void updateViewer();
+    void updateViewer(bool isForward);
+
+    void addLine(qint64 id);
+    void addAllLines();
+    void removeLine(qint64 id);
+    void removeAllLines();
+
     QWebEngineView* map;
 
 };

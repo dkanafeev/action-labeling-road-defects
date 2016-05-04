@@ -53,22 +53,15 @@ void DataViewer::setupUi()
 
 void DataViewer::onRedrawSignal(double speed)
 {
+    if (! timeData.size())
+        return;
+
     qint64 _tmpTimeElapsed = speed * timer.elapsed();
     // check timers and file exist
     // note: multiplication by speed is necessary for changing direction
     if ( speed * ( lastTime + _tmpTimeElapsed ) >= speed * nextTime && timeData.size())
     {
-        updateViewer();
-
-        // get next record id
-        nextRecord = speed > 0 ? nextRecord + 1 : nextRecord - 1 ;
-        // check if first/last record
-        nextRecord = nextRecord >= recordCounter ? 0 : nextRecord < 0 ? recordCounter - 1 : nextRecord;
-
-        // update times and restart timer
-        lastTime = nextTime;
-        timeLabel->setText("Time: " + QString::number(lastTime, 'f', 0));
-        nextTime = timeData[nextRecord];
+        redraw(speed > 0 ? true : false);
         timer.restart();
     }
 }
@@ -103,7 +96,9 @@ void DataViewer::openFileFailed()
 
 void DataViewer::readFile()
 {
-    nextRecord = 0;
+    // next record shouldn't be a zero at the beginning
+    // some issues could be if file contain only one line.
+    nextRecord = 1;
     recordCounter = 0;
 
     // read first line which contain column labels
@@ -162,6 +157,24 @@ void DataViewer::readFile()
     timer.start();
 }
 
+void DataViewer::redraw(bool isForward)
+{
+    if (! timeData.size())
+        return;
+    // copypaste from redraw - separate func?
+    updateViewer(isForward);
+
+    // get next record id
+    isForward ? ++nextRecord : --nextRecord;
+    // check if first/last record
+    nextRecord = nextRecord >= recordCounter ? 0 : nextRecord < 0 ? recordCounter - 1 : nextRecord;
+
+    // update times and restart timer
+    lastTime = nextTime;
+    timeLabel->setText("Time: " + QString::number(lastTime, 'f', 0));
+    nextTime = timeData[nextRecord];
+}
+
 qint64 DataViewer::msecFromQTime(QTime time)
 {
     qint64 runtime = 0;
@@ -180,38 +193,6 @@ void DataViewer::onClosePressed()
     // there should be destructor calling, which hasn't write yet
     qDebug() << fname + "end";
 }
-
-void DataViewer::onNextPressed()
-{
-    // copypaste from redraw - separate func?
-    updateViewer();
-
-    // check if first/last record
-    nextRecord = ++nextRecord >= recordCounter ? 0 : nextRecord;
-
-    // update times and restart timer
-    lastTime = nextTime;
-    timeLabel->setText("Time: " + QString::number(lastTime, 'f', 0));
-    nextTime = timeData[nextRecord];
-}
-
-void DataViewer::onPrevPressed()
-{
-    updateViewer();
-
-    // check if first/last record
-    nextRecord = --nextRecord < 0 ? recordCounter - 1 : nextRecord;
-
-    // update times and restart timer
-    lastTime = nextTime;
-    timeLabel->setText("Time: " + QString::number(lastTime, 'f', 0));
-    nextTime = timeData[nextRecord];
-}
-
-void DataViewer::onOpenPressed()
-{
-    QString fileName = QFileDialog::getOpenFileName(Q_NULLPTR, tr("Open File"), ".");
-    openFile(fileName);
-}
-
-
+void DataViewer::onNextPressed() { redraw(true );}
+void DataViewer::onPrevPressed() { redraw(false);}
+void DataViewer::onOpenPressed() { openFile(QFileDialog::getOpenFileName(Q_NULLPTR, tr("Open File"), "."));}

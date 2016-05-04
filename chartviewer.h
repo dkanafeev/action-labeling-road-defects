@@ -16,7 +16,7 @@ public slots:
 
 private:
     void startPreparationToDraw();
-    void updateViewer();
+    void updateViewer(bool isForward);
 
     QColor getColor(int idColor);
     qint64 msecFromQTime(QTime time);

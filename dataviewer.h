@@ -39,9 +39,11 @@ protected:
     void setupUi();
     void readFile();
     void openFileFailed();
+    void redraw(bool isForward);
     qint64 msecFromQTime(QTime time);
     virtual void startPreparationToDraw() = 0;
-    virtual void updateViewer() = 0;
+    virtual void updateViewer(bool isForward) = 0;
+
 
     // UI elements
     QPushButton *openButton;

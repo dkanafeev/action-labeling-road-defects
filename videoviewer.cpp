@@ -11,7 +11,7 @@ VideoViewer::VideoViewer (QWidget *parent) : DataViewer(parent)
 }
 
 void VideoViewer::startPreparationToDraw(){}
-void VideoViewer::updateViewer(){}
+void VideoViewer::updateViewer(bool isForward){}
 
 void VideoViewer::onHidePressed() {}
 void VideoViewer::onClosePressed() {}

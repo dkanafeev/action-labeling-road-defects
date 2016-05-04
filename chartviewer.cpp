@@ -19,7 +19,7 @@ ChartViewer::ChartViewer(QWidget *parent) : DataViewer(parent)
     this->openButton->hide();
 }
 
-void ChartViewer::updateViewer()
+void ChartViewer::updateViewer(bool isForward)
 {
     // update each line
     for (quint64 i = 0 ; i < lineNumber; ++i)
