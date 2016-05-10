@@ -8,6 +8,11 @@ MapViewer::MapViewer (QWidget *parent) : DataViewer(parent)
     map->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     map->setMinimumSize(300, 200);
     map->show();
+
+    cleanMap = new QPushButton("Clean");
+    cleanMap->setFixedSize(100, 25);
+    connect(cleanMap, SIGNAL(pressed()), this, SLOT(onCleanMapPressed()));
+    buttonLayout->addWidget(cleanMap);
 }
 
 void MapViewer::startPreparationToDraw()
@@ -18,9 +23,9 @@ void MapViewer::startPreparationToDraw()
 void MapViewer::updateViewer(bool isForward)
 {
     if ( isForward)
-        nextRecord != 0 ? addLine(nextRecord) : removeAllLines();
+        currentRecord != 0 ? addLine(currentRecord) : removeAllLines();
     else
-        nextRecord != recordCounter - 1 ? removeLine(nextRecord) : addAllLines();
+        currentRecord != recordCounter - 1 ? removeLine(currentRecord) : addAllLines();
 }
 
 void MapViewer::addLine(qint64 id){
@@ -47,10 +52,16 @@ void MapViewer::removeAllLines(){
     map->page()->runJavaScript("removeAllLines()");
 }
 
+void MapViewer::onCleanMapPressed()
+{
+    removeAllLines();
+}
+
 void MapViewer::onHidePressed()
 {
     map->setVisible(map->isVisible() ? false : true);
     filenameLabel->setVisible(map->isVisible());
 }
 void MapViewer::onClosePressed() {}
+
 

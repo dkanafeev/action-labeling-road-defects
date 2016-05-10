@@ -9,6 +9,7 @@ QT       += core gui
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 QT += printsupport
 QT += webenginewidgets
+QT += multimediawidgets
 TARGET = action-labeling-road-defects
 TEMPLATE = app
 

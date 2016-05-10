@@ -4,9 +4,7 @@
 #include <QWidget>
 #include <QFile>
 #include <QFileDialog>
-#include <QTime>
 #include <QLabel>
-#include <QElapsedTimer>
 #include <QDebug>
 #include <QPushButton>
 #include <QVBoxLayout>
@@ -20,37 +18,29 @@ public:
     explicit DataViewer(QWidget *parent = 0);
     void openFile(QString filename);
 
-    QString getFileName  () {return filename;}
-    double  getLastTime  () {return lastTime;}
-    double  getNextTime  () {return nextTime;}
-
 public slots:
-    void onRedrawSignal(double speed);
+    void onRedrawSignal(double speed, double time);
 
+signals:
+    void timelineEndSignal();
 
 protected slots:
-    void onNextPressed();
-    void onPrevPressed();
     void onOpenPressed();
     virtual void onHidePressed() = 0;
     virtual void onClosePressed() = 0;
 
 protected:
     void setupUi();
-    void readFile();
+    virtual void readFile();
     void openFileFailed();
     void redraw(bool isForward);
-    qint64 msecFromQTime(QTime time);
     virtual void startPreparationToDraw() = 0;
     virtual void updateViewer(bool isForward) = 0;
-
 
     // UI elements
     QPushButton *openButton;
     QPushButton *closeButton;
     QPushButton *hideButton;
-    QPushButton *nextButton;
-    QPushButton *prevButton;
     QLabel      *filenameLabel;
     QLabel      *timeLabel;
     QVBoxLayout *buttonLayout;
@@ -61,19 +51,19 @@ protected:
     QFile   *file;
 
     // info vars
-    QStringList   labels;
-    quint64       lineNumber; // = labels.size() - 1, w/o time line
-
-    // time vars
-    QElapsedTimer timer;
-    double lastTime;
-    double nextTime;
+    QStringList labels;
+    quint64     columnNumber; // = labels.size() - 1, w/o time line
 
     // data vars
-    qint64 nextRecord;
+    bool USE_CUSTOM_DATA;
+    bool REDRAW_STOPPED;
+    double speed;
+    double currentTime;
+    qint64 currentRecord;
     qint64 recordCounter;
     QVector <double> timeData;
-    QList <QVector <double>> viewerData;
+    QHash   <double, double>   timeKeys;
+    QList   <QVector <double>> viewerData;
 };
 
 #endif // DATAVIEWER_H

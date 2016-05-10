@@ -49,6 +49,13 @@
          </widget>
         </item>
         <item>
+         <widget class="Line" name="line_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QLabel" name="speedLabel">
           <property name="text">
            <string>Speed: 1</string>
@@ -80,6 +87,30 @@
          <widget class="QPushButton" name="stopButton">
           <property name="text">
            <string>Stop</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="line_5">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="timeEdit"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="gotoTimeButton">
+          <property name="text">
+           <string>Go to time</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="line_6">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
           </property>
          </widget>
         </item>

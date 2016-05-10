@@ -3,6 +3,9 @@
 
 #include <QWebEngineView>
 #include <dataviewer.h>
+#include <QMediaPlayer>
+#include <QVideoWidget>
+#include <QMediaPlaylist>
 
 class VideoViewer : public DataViewer
 {
@@ -14,10 +17,14 @@ public slots:
     virtual void onHidePressed();
     virtual void onClosePressed();
 
-private:
+protected:
+    void readFile();
     void startPreparationToDraw();
     void updateViewer(bool isForward);
-    QWebEngineView* map;
+    //QWebEngineView* map;
+    QVideoWidget* videowidget;
+    QMediaPlaylist* playlist;
+    QMediaPlayer mediaPlayer;
 
 };
 

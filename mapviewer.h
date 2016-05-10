@@ -13,8 +13,10 @@ public:
 public slots:
     virtual void onHidePressed();
     virtual void onClosePressed();
+    void onCleanMapPressed();
 
 private:
+    QPushButton* cleanMap;
     void startPreparationToDraw();
     void updateViewer(bool isForward);
 

@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QDebug>
 #include <QString>
+#include <QElapsedTimer>
 #include <QTimer>
 #include "chartviewer.h"
 #include "mapviewer.h"
@@ -22,22 +23,33 @@ public:
     ~MainWindow();
 
 signals:
-    void redrawSignal(double speed);
+    void redrawSignal(double speed, double timer);
 
 private slots:
+
     void onPlayClicked();
     void onStopClicked();
     void onSpeedUpClicked();
     void onSpeedDownClicked();
     void onOpenClicked();
-    void onTimerSignal();
+    void onGotoTimeClicked();
+
+    void onTimerSignal();       // signal from timer for redraw
+    void onTimelineEndSignal(); // signal from viewer that timeline of viewer is end
 
 private:
     double speed;
+    qint64 endCounter;
     const double minSpeed = 0.5;
-    const qint64 timerDelay = 2;
+    const qint64 timerDelay = 0;
     Ui::MainWindow *ui;
-    QTimer  *dataTimer;
+
+    // timers
+    QTimer  *dataTimer; // for emit redraw signals
+    qint64   savedTime;           // saved time when stop
+    QElapsedTimer timer;  // for count elapsed time
+
+    // viewers
     MapViewer* mapViewer;
     VideoViewer* videoViewer;
     QList <ChartViewer*> chartList;

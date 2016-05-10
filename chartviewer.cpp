@@ -16,24 +16,30 @@ ChartViewer::ChartViewer(QWidget *parent) : DataViewer(parent)
     chartPlot->yAxis->setRange(-rangeYSize, rangeYSize);
     viewerLayout->addWidget(chartPlot);
 
+    //setup buttons
     this->openButton->hide();
+    increaseRangeYButton = new QPushButton("+");
+    increaseRangeYButton->setFixedSize(100, 25);
+    connect(increaseRangeYButton, SIGNAL(pressed()), this, SLOT(onIncreaseRangeYPressed()));
+
+    decreaseRangeYButton = new QPushButton("-");
+    decreaseRangeYButton->setFixedSize(100, 25);
+    connect(decreaseRangeYButton, SIGNAL(pressed()), this, SLOT(onDecreaseRangeYPressed()));
+
+    buttonLayout->addWidget(increaseRangeYButton);
+    buttonLayout->addWidget(decreaseRangeYButton);
 }
 
 void ChartViewer::updateViewer(bool isForward)
 {
-    // update each line
-    for (quint64 i = 0 ; i < lineNumber; ++i)
-    {
-        chartPlot->graph(i)->rescaleKeyAxis();
-        chartPlot->xAxis->setRange(timeData[nextRecord], rangeXSize, Qt::AlignCenter);
-    }
+    chartPlot->xAxis->setRange(currentTime, rangeXSize, Qt::AlignCenter);
     chartPlot->replot();
 }
 
 void ChartViewer::startPreparationToDraw()
 {
     // preload all data to chart
-    for (quint64 i = 0; i < lineNumber; i++)
+    for (quint64 i = 0; i < columnNumber; i++)
     {
         chartPlot->addGraph(chartPlot->xAxis, chartPlot->yAxis);
         chartPlot->graph(i)->rescaleKeyAxis();
@@ -75,4 +81,20 @@ void ChartViewer::onClosePressed()
     // send signal to MainWindow that this chartViewer is removed
     // there should be destructor call, which hasn't write yet
     qDebug() << fname + "end";
+}
+
+void ChartViewer::onIncreaseRangeYPressed()
+{
+    rangeYSize*=2;
+    rangeYSize = rangeYSize >= maxRangeYSize ? maxRangeYSize : rangeYSize;
+    chartPlot->yAxis->setRange(-rangeYSize, rangeYSize);
+    chartPlot->replot();
+}
+
+void ChartViewer::onDecreaseRangeYPressed()
+{
+    rangeYSize/=2;
+    rangeYSize = rangeYSize <= minRangeYSize ? minRangeYSize : rangeYSize;
+    chartPlot->yAxis->setRange(-rangeYSize, rangeYSize);
+    chartPlot->replot();
 }

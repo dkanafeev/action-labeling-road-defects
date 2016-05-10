@@ -10,11 +10,15 @@ class ChartViewer : public DataViewer
 public:
     explicit ChartViewer(QWidget *parent = 0);
 
-public slots:
+protected slots:
     void onHidePressed();
     void onClosePressed();
+    void onIncreaseRangeYPressed();
+    void onDecreaseRangeYPressed();
 
-private:
+protected:
+    QPushButton *decreaseRangeYButton;
+    QPushButton *increaseRangeYButton;
     void startPreparationToDraw();
     void updateViewer(bool isForward);
 
@@ -22,11 +26,14 @@ private:
     qint64 msecFromQTime(QTime time);
 
     // chart vars
-    const double rangeXSize = 1000.0;
-    const double rangeYSize = 20.0;
-    const int plotHeight = 200;
+    quint16 rangeXSize = 1000.0;
+    quint16 minRangeYSize = 1.0;
+    quint16 maxRangeYSize = 1024.0;
+    quint16 rangeYSize = 32.0;
+    int plotHeight = 200;
     QCustomPlot *chartPlot;
     QList <QPen> lineColors;
+
 };
 
 #endif // CHARTVIEWER_H
