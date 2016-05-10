@@ -34,11 +34,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // setup ui
     ui->mapLayout->addLayout(mapViewer);
-    ui->videoLayout->addLayout(videoViewer);
+    ui->videoLayout->addWidget(videoViewer);
     ui->stopButton->setEnabled(false);
     ui->speedUpButton->setEnabled(false);
     ui->speedDownButton->setEnabled(false);
     ui->timeEdit->setValidator( new QIntValidator() );
+    ui->playButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
+    ui->stopButton->setIcon(style()->standardIcon(QStyle::SP_MediaStop));
 }
 
 void MainWindow::onOpenClicked()
