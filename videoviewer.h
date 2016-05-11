@@ -42,7 +42,7 @@
 #define VIDEOVIEWER_H
 
 #include <qmediaplayer.h>
-
+#include "dataviewer.h"
 #include <QtGui/QMovie>
 #include <QtWidgets/QWidget>
 
@@ -62,6 +62,8 @@ public:
 public slots:
     void openFile();
     void play();
+    void onSpeedChangedSignal(double speed);
+    void onPositionChanged(qint64 position);
 
 private slots:
     void mediaStateChanged(QMediaPlayer::State state);
@@ -76,6 +78,7 @@ private:
     QAbstractButton *playButton;
     QSlider *positionSlider;
     QLabel *errorLabel;
+    void updateViewer(bool isForward);
 };
 
 #endif

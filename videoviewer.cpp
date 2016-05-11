@@ -155,3 +155,14 @@ void VideoViewer::handleError()
     playButton->setEnabled(false);
     errorLabel->setText("Error: " + mediaPlayer.errorString());
 }
+
+void VideoViewer::onSpeedChangedSignal(double speed){
+    mediaPlayer.setPlaybackRate(speed);
+    mediaPlayer.play();
+}
+
+void VideoViewer::onPositionChanged(qint64 position)
+{
+    mediaPlayer.setPosition(int(position));
+    positionChanged(position);
+}

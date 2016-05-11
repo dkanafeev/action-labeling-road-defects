@@ -27,7 +27,11 @@ MainWindow::MainWindow(QWidget *parent) :
     // connect to redraw
     connect (this, SIGNAL(redrawSignal(double, double)), mapViewer,   SLOT(onRedrawSignal(double, double)));
     connect (this, SIGNAL(redrawSignal(double, double)), videoViewer, SLOT(onRedrawSignal(double, double)));
-
+    connect(this,   SIGNAL(onSpeedChanged()), videoViewer, SLOT(onSpeedChangedSignal(double)));
+    connect(this, SIGNAL(onSpeedChanged(double)), videoViewer, SLOT(onSpeedChangedSignal(double)));
+    connect(ui->playButton, SIGNAL(pressed()), videoViewer, SLOT(play()));
+    connect(ui->stopButton, SIGNAL(pressed()), videoViewer, SLOT(play()));
+    connect(this, SIGNAL(positionChanged(qint64)), videoViewer, SLOT(onPositionChanged(qint64)));
     // connect to timeline end
     connect (mapViewer,   SIGNAL(timelineEndSignal()), this, SLOT(onTimelineEndSignal()));
     connect (videoViewer, SIGNAL(timelineEndSignal()), this, SLOT(onTimelineEndSignal()));
@@ -90,6 +94,7 @@ void MainWindow::onSpeedUpClicked()
 
     // update ui
     ui->speedLabel->setText("Speed: " + QString::number(speed));
+    emit onSpeedChanged(speed);
 }
 
 void MainWindow::onSpeedDownClicked()
@@ -103,6 +108,7 @@ void MainWindow::onSpeedDownClicked()
 
     // update ui
     ui->speedLabel->setText("Speed: " + QString::number(speed));
+    emit onSpeedChanged(speed);
 }
 
 void MainWindow::onStopClicked()
@@ -130,6 +136,8 @@ void MainWindow::onGotoTimeClicked()
     savedTime = ui->timeEdit->text().toInt();
     timer.restart();
     qDebug () << "onGotoTimeClicked() " << QString::number(savedTime);
+    emit positionChanged(savedTime);
+
 }
 
 void MainWindow::onTimerSignal()

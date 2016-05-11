@@ -24,6 +24,8 @@ public:
 
 signals:
     void redrawSignal(double speed, double timer);
+    void onSpeedChanged(double speed);
+    void positionChanged(qint64 position);
 
 private slots:
 
