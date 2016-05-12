@@ -44,6 +44,8 @@
 #include <qmediaplayer.h>
 #include <QtGui/QMovie>
 #include <QtWidgets/QWidget>
+#include <QLineEdit>
+#include <QPushButton>
 
 QT_BEGIN_NAMESPACE
 class QAbstractButton;
@@ -62,7 +64,6 @@ public slots:
     void openFile();
     void play();
     void onSpeedChangedSignal(double speed);
-    void onPositionChanged(qint64 position);
 
 private slots:
     void mediaStateChanged(QMediaPlayer::State state);
@@ -70,6 +71,7 @@ private slots:
     void durationChanged(qint64 duration);
     void setPosition(int position);
     void handleError();
+    void changeHeight();
 
 private:
     QVideoWidget* videoWidget;
@@ -77,6 +79,8 @@ private:
     QAbstractButton *playButton;
     QSlider *positionSlider;
     QLabel *errorLabel;
+    QLineEdit *scaleLineEdit;
+    QPushButton *scaleButton;
 };
 
 #endif

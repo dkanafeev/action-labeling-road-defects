@@ -34,7 +34,6 @@ MainWindow::MainWindow(QWidget *parent) :
     //connect (this, SIGNAL(redrawSignal(double, double, int)), videoViewer, SLOT(onRedrawSignal(double, double, int)));
     connect(ui->playButton, SIGNAL(pressed()), videoViewer, SLOT(play()));
     connect(ui->stopButton, SIGNAL(pressed()), videoViewer, SLOT(play()));
-    connect(this, SIGNAL(positionChanged(qint64)), videoViewer, SLOT(onPositionChanged(qint64)));
     connect(this, SIGNAL(onSpeedChanged(double)), videoViewer, SLOT(onSpeedChangedSignal(double)));
     // connect to timeline end
     connect (mapViewer,   SIGNAL(timelineEndSignal()), this, SLOT(onTimelineEndSignal()));
@@ -56,7 +55,7 @@ void MainWindow::onOpenClicked()
 {
     QString fname = "MainWindow::onOpenClicked";
     qDebug () << fname + " started" ;
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), ".");
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Movie"),QDir::homePath(),tr("File (*.output)"));
     if (fileName == "")
     {
         qDebug() << fname + " empty filename! ended";
@@ -141,8 +140,6 @@ void MainWindow::onGotoTimeClicked()
     savedTime = ui->timeEdit->text().toInt();
     timer.restart();
     qDebug () << "onGotoTimeClicked() " << QString::number(savedTime);
-    emit positionChanged(savedTime);
-
 }
 
 void MainWindow::onTimerSignal()

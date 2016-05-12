@@ -72,12 +72,22 @@ VideoViewer::VideoViewer(QWidget *parent)
 
     errorLabel = new QLabel;
     errorLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
+    scaleLineEdit = new QLineEdit;
+    scaleLineEdit->setAlignment(Qt::AlignRight);
+    scaleLineEdit->setFixedWidth(60);
+    scaleButton = new QPushButton;
+    scaleButton->setText("Set height");
+    //scaleButton->setAlignment(Qt::AlignRight);
+    connect(scaleButton, SIGNAL(clicked()),
+            this, SLOT(changeHeight()));
 
     QBoxLayout *controlLayout = new QHBoxLayout;
     controlLayout->setMargin(0);
     controlLayout->addWidget(openButton);
     controlLayout->addWidget(playButton);
     controlLayout->addWidget(positionSlider);
+    controlLayout->addWidget(scaleLineEdit);
+    controlLayout->addWidget(scaleButton);
 
     QBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(videoWidget);
@@ -102,7 +112,7 @@ void VideoViewer::openFile()
 {
     errorLabel->setText("");
 
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Movie"));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Movie"),QDir::homePath(),tr("Videos (*.avi *.mp3 *.mp4)"));
 
     if (!fileName.isEmpty()) {
         mediaPlayer.setMedia(QUrl::fromLocalFile(fileName));
@@ -113,13 +123,16 @@ void VideoViewer::openFile()
 void VideoViewer::play()
 {
     qDebug() << videoWidget->geometry();
-    switch(mediaPlayer.state()) {
-    case QMediaPlayer::PlayingState:
-        mediaPlayer.pause();
-        break;
-    default:
-        mediaPlayer.play();
-        break;
+    if(mediaPlayer.mediaStatus() != QMediaPlayer::EndOfMedia)
+    {
+        switch(mediaPlayer.state()) {
+        case QMediaPlayer::PlayingState:
+            mediaPlayer.pause();
+            break;
+        default:
+            mediaPlayer.play();
+            break;
+        }
     }
 }
 
@@ -161,8 +174,7 @@ void VideoViewer::onSpeedChangedSignal(double speed){
     mediaPlayer.play();
 }
 
-void VideoViewer::onPositionChanged(qint64 position)
+void VideoViewer::changeHeight()
 {
-    mediaPlayer.setPosition(int(position));
-    positionChanged(position);
+    videoWidget->setFixedHeight(scaleLineEdit->text().toInt());
 }
