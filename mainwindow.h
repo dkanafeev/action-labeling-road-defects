@@ -23,7 +23,7 @@ public:
     ~MainWindow();
 
 signals:
-    void redrawSignal(double speed, double timer);
+    void redrawSignal(double speed, double timer, int action);
     void onSpeedChanged(double speed);
     void positionChanged(qint64 position);
 
@@ -35,11 +35,18 @@ private slots:
     void onSpeedDownClicked();
     void onOpenClicked();
     void onGotoTimeClicked();
+    void onLoadActionsClicked();
+    void onSaveActionsClicked();
+    void onActionStartedClicked();
+    void onActionEndedClicked();
+    void onAddActionClicked();
 
     void onTimerSignal();       // signal from timer for redraw
     void onTimelineEndSignal(); // signal from viewer that timeline of viewer is end
 
 private:
+    int currentAction;
+    QHash <QString, int> actionCodes;
     double speed;
     qint64 endCounter;
     const double minSpeed = 0.5;

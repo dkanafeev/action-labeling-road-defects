@@ -102,7 +102,7 @@ void VideoViewer::openFile()
 {
     errorLabel->setText("");
 
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Movie"),QDir::homePath());
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Movie"));
 
     if (!fileName.isEmpty()) {
         mediaPlayer.setMedia(QUrl::fromLocalFile(fileName));

@@ -16,6 +16,8 @@ public slots:
     void onCleanMapPressed();
 
 private:
+
+
     QPushButton* cleanMap;
     void startPreparationToDraw();
     void updateViewer(bool isForward);

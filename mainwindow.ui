@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>900</width>
-    <height>601</height>
+    <height>872</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -64,29 +64,53 @@
         </item>
         <item>
          <widget class="QPushButton" name="speedDownButton">
+          <property name="minimumSize">
+           <size>
+            <width>30</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="text">
-           <string>&lt;&lt;</string>
+           <string>⏪</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QPushButton" name="speedUpButton">
+          <property name="minimumSize">
+           <size>
+            <width>30</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="text">
-           <string>&gt;&gt;</string>
+           <string>⏩</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QPushButton" name="playButton">
+          <property name="minimumSize">
+           <size>
+            <width>30</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="text">
-           <string>Play</string>
+           <string>	▶</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QPushButton" name="stopButton">
+          <property name="minimumSize">
+           <size>
+            <width>30</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="text">
-           <string>Stop</string>
+           <string>■</string>
           </property>
          </widget>
         </item>
@@ -98,12 +122,22 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="timeEdit"/>
+         <widget class="QLineEdit" name="timeEdit">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QPushButton" name="gotoTimeButton">
+          <property name="minimumSize">
+           <size>
+            <width>40</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="text">
-           <string>Go to time</string>
+           <string>goto</string>
           </property>
          </widget>
         </item>
@@ -115,36 +149,91 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="actionStartedButton">
+         <widget class="QPushButton" name="loadActionsButton">
+          <property name="minimumSize">
+           <size>
+            <width>40</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="text">
-           <string>Action stated</string>
+           <string>Load</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="saveActionsButton">
+          <property name="minimumSize">
+           <size>
+            <width>40</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Save</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="addActionEdit">
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>New action...</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="addActionButton">
+          <property name="minimumSize">
+           <size>
+            <width>30</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>+</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="actionStartedButton">
+          <property name="minimumSize">
+           <size>
+            <width>40</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Start</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QPushButton" name="actionEndedButton">
+          <property name="minimumSize">
+           <size>
+            <width>40</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="text">
-           <string>Action ended</string>
+           <string>End</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QComboBox" name="cmbox_actionType">
-          <item>
-           <property name="text">
-            <string>Turn Left</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Turn Right</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Acceleration</string>
-           </property>
-          </item>
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>0</height>
+           </size>
+          </property>
          </widget>
         </item>
        </layout>

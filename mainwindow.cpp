@@ -13,28 +13,32 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(dataTimer, SIGNAL(timeout()), this, SLOT(onTimerSignal()));
 
     // connect buttons
-    connect(ui->openButton,      SIGNAL(pressed()), this, SLOT(onOpenClicked()));
-    connect(ui->playButton,      SIGNAL(pressed()), this, SLOT(onPlayClicked()));
-    connect(ui->stopButton,      SIGNAL(pressed()), this, SLOT(onStopClicked()));
-    connect(ui->speedUpButton,   SIGNAL(pressed()), this, SLOT(onSpeedUpClicked()));
-    connect(ui->speedDownButton, SIGNAL(pressed()), this, SLOT(onSpeedDownClicked()));
-    connect(ui->gotoTimeButton,  SIGNAL(pressed()), this, SLOT(onGotoTimeClicked()));
+    connect(ui->openButton,          SIGNAL(pressed()), this, SLOT(onOpenClicked()));
+    connect(ui->playButton,          SIGNAL(pressed()), this, SLOT(onPlayClicked()));
+    connect(ui->stopButton,          SIGNAL(pressed()), this, SLOT(onStopClicked()));
+    connect(ui->speedUpButton,       SIGNAL(pressed()), this, SLOT(onSpeedUpClicked()));
+    connect(ui->speedDownButton,     SIGNAL(pressed()), this, SLOT(onSpeedDownClicked()));
+    connect(ui->gotoTimeButton,      SIGNAL(pressed()), this, SLOT(onGotoTimeClicked()));
+    connect(ui->addActionButton,     SIGNAL(pressed()), this, SLOT(onAddActionClicked()));
+    connect(ui->loadActionsButton,   SIGNAL(pressed()), this, SLOT(onLoadActionsClicked()));
+    connect(ui->saveActionsButton,   SIGNAL(pressed()), this, SLOT(onSaveActionsClicked()));
+    connect(ui->actionStartedButton, SIGNAL(pressed()), this, SLOT(onActionStartedClicked()));
+    connect(ui->actionEndedButton,   SIGNAL(pressed()), this, SLOT(onActionEndedClicked()));
 
     // setup default viewers
     mapViewer = new MapViewer();
     videoViewer = new VideoViewer();
 
     // connect to redraw
-    connect (this, SIGNAL(redrawSignal(double, double)), mapViewer,   SLOT(onRedrawSignal(double, double)));
-    connect (this, SIGNAL(redrawSignal(double, double)), videoViewer, SLOT(onRedrawSignal(double, double)));
-    connect(this,   SIGNAL(onSpeedChanged()), videoViewer, SLOT(onSpeedChangedSignal(double)));
-    connect(this, SIGNAL(onSpeedChanged(double)), videoViewer, SLOT(onSpeedChangedSignal(double)));
+    connect (this, SIGNAL(redrawSignal(double, double, int)), mapViewer,   SLOT(onRedrawSignal(double, double, int)));
+    //connect (this, SIGNAL(redrawSignal(double, double, int)), videoViewer, SLOT(onRedrawSignal(double, double, int)));
     connect(ui->playButton, SIGNAL(pressed()), videoViewer, SLOT(play()));
     connect(ui->stopButton, SIGNAL(pressed()), videoViewer, SLOT(play()));
     connect(this, SIGNAL(positionChanged(qint64)), videoViewer, SLOT(onPositionChanged(qint64)));
+    connect(this, SIGNAL(onSpeedChanged(double)), videoViewer, SLOT(onSpeedChangedSignal(double)));
     // connect to timeline end
     connect (mapViewer,   SIGNAL(timelineEndSignal()), this, SLOT(onTimelineEndSignal()));
-    connect (videoViewer, SIGNAL(timelineEndSignal()), this, SLOT(onTimelineEndSignal()));
+    //connect (videoViewer, SIGNAL(timelineEndSignal()), this, SLOT(onTimelineEndSignal()));
 
     // setup ui
     ui->mapLayout->addLayout(mapViewer);
@@ -43,8 +47,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->speedUpButton->setEnabled(false);
     ui->speedDownButton->setEnabled(false);
     ui->timeEdit->setValidator( new QIntValidator() );
-    ui->playButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
-    ui->stopButton->setIcon(style()->standardIcon(QStyle::SP_MediaStop));
+    currentAction = 0;
+    ui->cmbox_actionType->addItem("no_action");
+    actionCodes.insert("no_action", currentAction);
 }
 
 void MainWindow::onOpenClicked()
@@ -61,7 +66,7 @@ void MainWindow::onOpenClicked()
     ChartViewer* test = new ChartViewer();
     chartList.append(test);
     test->openFile(fileName);
-    connect (this, SIGNAL(redrawSignal(double, double)), test, SLOT(onRedrawSignal(double, double)));
+    connect (this, SIGNAL(redrawSignal(double, double, int)), test, SLOT(onRedrawSignal(double, double, int)));
     ui->chartsLayout->insertLayout(chartList.size() - 1, test);
     qDebug () << fname + " ended" ;
 }
@@ -142,11 +147,56 @@ void MainWindow::onGotoTimeClicked()
 
 void MainWindow::onTimerSignal()
 {
-    emit redrawSignal(speed, savedTime + speed * timer.elapsed());
+    emit redrawSignal(speed, savedTime + speed * timer.elapsed(), currentAction);
+}
+
+void MainWindow::onAddActionClicked()
+{
+    QString actionName = ui->addActionEdit->text();
+    ui->cmbox_actionType->addItem(actionName);
+    actionCodes.insert(actionName, actionCodes.size());
+}
+
+void MainWindow::onActionStartedClicked()
+{
+    QString actionName = ui->cmbox_actionType->itemText(ui->cmbox_actionType->currentIndex());
+    currentAction = actionCodes[actionName];
+}
+
+void MainWindow::onActionEndedClicked()
+{
+    currentAction = actionCodes["no_action"];
+}
+
+void MainWindow::onSaveActionsClicked()
+{
+    // generate report, lables at the first line
+    QString actionsReport = "action_id,action_name\n";
+
+    // add data
+    for (int i = 0; i < ui->cmbox_actionType->count(); ++i)
+        actionsReport.append( QString::number(i) + "," + ui->cmbox_actionType->itemText(i) + "\n");
+
+    // save actionsReport
+    QString actionsReportName = QFileDialog::getSaveFileName();
+    QFile file( actionsReportName );
+    if ( file.open(QIODevice::WriteOnly) )
+    {
+        QTextStream stream( &file );
+        stream << actionsReport << endl;
+    }
+    file.close();
+}
+void MainWindow::onLoadActionsClicked()
+{
+    qDebug() << "onLoadActionsClicked currently unavailable!";
 }
 
 void MainWindow::onTimelineEndSignal()
 {
+    // NOT DONE YET! DON'T USE IT!
+    return;
+
     ++endCounter;
     if ( endCounter == chartList.size() + 2) // + 2 are MapViewer and VideoViewer
     {
@@ -154,7 +204,7 @@ void MainWindow::onTimelineEndSignal()
         emit onStopClicked();
         savedTime = 0;
         endCounter = 0;
-        emit redrawSignal(0, 0); // mean that all viewer should be returned to the initial state
+        emit redrawSignal(0, 0, currentAction); // mean that all viewer should be returned to the initial state
     }
 }
 

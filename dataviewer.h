@@ -19,13 +19,14 @@ public:
     void openFile(QString filename);
 
 public slots:
-    void onRedrawSignal(double speed, double time);
+    void onRedrawSignal(double speed, double time, int action);
 
 signals:
     void timelineEndSignal();
 
 protected slots:
     void onOpenPressed();
+    void onReportPressed();
     virtual void onHidePressed() = 0;
     virtual void onClosePressed() = 0;
 
@@ -41,6 +42,7 @@ protected:
     QPushButton *openButton;
     QPushButton *closeButton;
     QPushButton *hideButton;
+    QPushButton *reportButton;
     QLabel      *filenameLabel;
     QLabel      *timeLabel;
     QVBoxLayout *buttonLayout;
@@ -61,6 +63,7 @@ protected:
     double currentTime;
     qint64 currentRecord;
     qint64 recordCounter;
+    QVector <int> actionData;
     QVector <double> timeData;
     QHash   <double, double>   timeKeys;
     QList   <QVector <double>> viewerData;

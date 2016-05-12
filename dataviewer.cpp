@@ -25,6 +25,10 @@ void DataViewer::setupUi()
     openButton->setFixedSize(100, 25);
     connect(openButton, SIGNAL(pressed()), this, SLOT(onOpenPressed()));
 
+    reportButton = new QPushButton("Report");
+    reportButton->setFixedSize(100, 20);
+    connect(reportButton, SIGNAL(pressed()), this, SLOT(onReportPressed()));
+
     //setup labels
     filenameLabel = new QLabel("");
     timeLabel = new QLabel("");
@@ -36,6 +40,7 @@ void DataViewer::setupUi()
     buttonLayout->addWidget(hideButton);
     buttonLayout->addWidget(openButton);
     buttonLayout->addWidget(closeButton);
+    buttonLayout->addWidget(reportButton);
 
     // setup viewerLayout
     viewerLayout = new QVBoxLayout;
@@ -46,7 +51,7 @@ void DataViewer::setupUi()
     this->addLayout(viewerLayout);
 }
 
-void DataViewer::onRedrawSignal(double speed, double time)
+void DataViewer::onRedrawSignal(double speed, double time, int action)
 {
     // don't redraw if used default data sources and this sources is empty
     if (! timeData.size() && ! USE_CUSTOM_DATA)
@@ -64,9 +69,10 @@ void DataViewer::onRedrawSignal(double speed, double time)
             // save current speed
             this->speed = speed;
             // save time key
-            timeLabel->setText("Time: " + QString::number(i));
+            timeLabel->setText("Time: " + QString::number(i) + " A=" + QString::number(action));
             currentTime = i;
             currentRecord = timeKeys.value(i);
+            actionData[currentRecord] = action;
             // start redraw
             redraw(speed > 0);
             break;
@@ -122,6 +128,7 @@ void DataViewer::readFile()
     viewerData.clear();
     timeData.clear();
     timeKeys.clear();
+    actionData.clear();
 
     for (int i = 0; i < labels.size(); ++i)
     {
@@ -144,6 +151,9 @@ void DataViewer::readFile()
         // skip line if number of value is not the same as label number
         if (_tmpSplitedLine.size() != columnNumber + 1)
             continue;
+
+        // add default action id to actionData
+        actionData.append(0);
 
         // read fisrt value, it should be a time
         _tmpStr = _tmpSplitedLine.at(0);
@@ -176,4 +186,34 @@ void DataViewer::onClosePressed()
 
 void DataViewer::onOpenPressed() {
     openFile(QFileDialog::getOpenFileName(Q_NULLPTR, tr("Open File"), "."));
+}
+
+void DataViewer::onReportPressed()
+{
+    // generate report, lables at the first line
+    QString report = labels.join(",") + ",action\n";
+    QString _tmpData = "";
+
+    // add data
+    for (int i = 0; i < timeData.size(); ++i)
+    {
+        _tmpData = "";
+        for (int j = 0; j < labels.size() - 1; ++j)
+            _tmpData.append(QString::number(viewerData[j].at(i)) + ",");
+
+        QString tt =  QString::number(timeData.value(i), 'f', 0) + ","
+                   + _tmpData
+                   + QString::number(actionData.value(i)) + "\n";
+        report.append(tt);
+    }
+
+    // save report
+    QString reportName = QFileDialog::getSaveFileName();
+    QFile file( reportName );
+    if ( file.open(QIODevice::WriteOnly) )
+    {
+        QTextStream stream( &file );
+        stream << report << endl;
+    }
+    file.close();
 }
