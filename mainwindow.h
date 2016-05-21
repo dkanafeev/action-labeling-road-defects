@@ -48,7 +48,7 @@ private:
     QHash <QString, int> actionCodes;
     double speed;
     qint64 endCounter;
-    const double minSpeed = 0.5;
+    const double minSpeed = 0.25;
     const qint64 timerDelay = 0;
     Ui::MainWindow *ui;
 

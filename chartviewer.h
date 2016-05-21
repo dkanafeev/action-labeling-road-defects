@@ -26,7 +26,7 @@ protected:
     qint64 msecFromQTime(QTime time);
 
     // chart vars
-    quint16 rangeXSize = 1000.0;
+    quint16 rangeXSize = 5000.0;
     quint16 minRangeYSize = 1.0;
     quint16 maxRangeYSize = 1024.0;
     quint16 rangeYSize = 32.0;

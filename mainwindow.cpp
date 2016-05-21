@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // setup timers
     savedTime = 0;
+    speed = 0;
     dataTimer = new QTimer();
     connect(dataTimer, SIGNAL(timeout()), this, SLOT(onTimerSignal()));
 
@@ -55,7 +56,7 @@ void MainWindow::onOpenClicked()
 {
     QString fname = "MainWindow::onOpenClicked";
     qDebug () << fname + " started" ;
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Movie"),QDir::homePath(),tr("File (*.output)"));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open data"), QDir::homePath(),tr("File (*.output)"));
     if (fileName == "")
     {
         qDebug() << fname + " empty filename! ended";
@@ -73,7 +74,7 @@ void MainWindow::onOpenClicked()
 void MainWindow::onPlayClicked()
 {
     // set default speed
-    speed = 1;
+    if (!speed) speed = 1;
 
     // start timers
     dataTimer->start(timerDelay);
@@ -118,13 +119,13 @@ void MainWindow::onSpeedDownClicked()
 void MainWindow::onStopClicked()
 {
     // clean speed value
-    speed = 0;
+//    speed = 0;
 
     // stop timers
     dataTimer->stop();
 
     // save elasped time
-    savedTime +=  timer.elapsed();
+    savedTime +=  speed * timer.elapsed();
 
     // update ui
     ui->speedLabel->setText("Speed: " + QString::number(speed));

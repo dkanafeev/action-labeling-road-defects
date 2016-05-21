@@ -22,10 +22,40 @@ void MapViewer::startPreparationToDraw()
 
 void MapViewer::updateViewer(bool isForward)
 {
-    if ( isForward)
+
+    if ( isForward )
+    {
+        if (actionData[currentRecord]){
+            addMarker(currentRecord);
+        }
         currentRecord != 0 ? addLine(currentRecord) : removeAllLines();
+    }
     else
+    {
+        if (actionData[currentRecord]){
+            removeMarker(currentRecord);
+        }
         currentRecord != recordCounter - 1 ? removeLine(currentRecord) : addAllLines();
+    }
+}
+
+void MapViewer::addMarker(qint64 id){
+
+    QString jsParam = QString::number(viewerData[0][id])   + "," +
+                      QString::number(viewerData[1][id]) ;
+    QString str = "addMarker(" + jsParam + ");"; // run func from google_maps.html
+    map->page()->runJavaScript(str);
+}
+
+void MapViewer::removeMarker(qint64 id){
+
+    QString jsParam = QString::number(id-1);
+    QString str = "removeMarker(" + jsParam + ");"; // run func from google_maps.html
+    map->page()->runJavaScript(str);
+}
+
+void MapViewer::removeAllMarkers(){
+ map->page()->runJavaScript("removeAllMarkers()");
 }
 
 void MapViewer::addLine(qint64 id){

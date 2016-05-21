@@ -13,6 +13,7 @@
     <script type="text/javascript">
       var map;
       var lines = [];
+      var markers = [];
 
       function initialize() {
         var myOptions = {
@@ -42,6 +43,21 @@
 
           var newLoc = new google.maps.LatLng(lat_next, lng_next);
           map.setCenter(newLoc);
+      }
+
+      function addMarker(lat_current, lng_current) {
+          var myLatLng = {lat: lat_current, lng: lng_current};
+
+          var marker = new google.maps.Marker({
+            position: myLatLng,
+            map: map,
+          })
+          markers.push(marker);
+      }
+
+      function removeMarker(id) {
+          markers[id].setMap(null);
+          markers.splice(id, 1);
       }
 
       function removeLine(id) {

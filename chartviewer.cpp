@@ -32,6 +32,13 @@ ChartViewer::ChartViewer(QWidget *parent) : DataViewer(parent)
 
 void ChartViewer::updateViewer(bool isForward)
 {
+    if (actionData[currentRecord]){
+        QCPItemLine *verticalLine = new QCPItemLine(chartPlot);
+        chartPlot->addItem(verticalLine);
+        verticalLine->start->setCoords(currentTime, 1000);
+        verticalLine->end->setCoords(currentTime, -1000);
+        verticalLine->setPen(QPen(QBrush(getColor(actionData[currentRecord])), 3));
+    }
     chartPlot->xAxis->setRange(currentTime, rangeXSize, Qt::AlignCenter);
     chartPlot->replot();
 }
